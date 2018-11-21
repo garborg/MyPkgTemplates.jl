@@ -18,9 +18,10 @@ public(; kwargs...) = Template(;
     kwargs...
 )
 
-private(; owner, kwargs...) = Template(;
-    license="",
+private(; host, owner, kwargs...) = Template(;
+    host=host,
     ssh=true,
+    license="",
     plugins=[
         TestsInSrc(),
         AllRightsReserved(owner),
