@@ -15,7 +15,7 @@ using PkgTemplates: CustomPlugin, gen_file
             @testset "$pkg_name.jl" begin
                 for (root, dirs, files) in walkdir("../src")
                     for file in files
-                        if endswith(file, ".jl") && startswith(file, "test_")
+                        if endswith(file, "_test.jl")
                             include(joinpath(root, file))
                         end
                     end
@@ -32,8 +32,8 @@ using PkgTemplates: CustomPlugin, gen_file
             @test $pkg_name.greet() == nothing
             """
 
-        gen_file(joinpath(t.dir, pkg_name, "src", "test_$pkg_name.jl"), test_text)
-        ["runtests.jl", "test_$pkg_name.jl"]
+        gen_file(joinpath(t.dir, pkg_name, "src", "$(pkg_name)_test.jl"), test_text)
+        ["runtests.jl", "$(pkg_name)_test.jl"]
     end
 end
 
