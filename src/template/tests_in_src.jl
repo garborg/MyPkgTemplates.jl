@@ -1,7 +1,7 @@
 using Test
-using MyPkgTemplates
+using {{{PKG}}}
 
-@testset "MyPkgTemplates.jl" begin
+@testset "{{{PKG}}}.jl" begin
     for (root, _, files) in walkdir("../src")
         for file in files
             if endswith(file, "_test.jl")
