@@ -30,17 +30,6 @@ min_julia_version = v"1.4"
 using PkgTemplates
 using MyPkgTemplates
 
-function min_aware_extra_versions(min_version)
-    min_str = PkgTemplates.format_version(min_version)
-    extra_versions = String[min_str]
-    for v_str in PkgTemplates.DEFAULT_CI_VERSIONS
-        if v_str >= min_str && !in(v_str, extra_versions)
-            push!(extra_versions, v_str)
-        end
-    end
-    extra_versions
-end
-
 test_arm = platforms.arm64
 @assert !is_proprietary || !test_arm
 
@@ -52,7 +41,7 @@ gh_platforms = (; filter(kv -> first(kv) != :arm64, pairs(platforms))...)
 plugins = [
     Git(; manifest=!is_pkg, ssh=true),
     Documenter{GitHubActions}(),
-    GitHubActions(; gh_platforms..., extra_versions=min_aware_extra_versions(min_julia_version)),
+    GitHubActions(; gh_platforms...),
     Tests(; file=TestsInSrc.TEMPLATE_PATH, project=false)
 ]
 
@@ -64,7 +53,6 @@ if test_arm
         x64=false,
         arm64=true,
         coverage=false,
-        extra_versions=min_aware_extra_versions(min_julia_version),
     ))
 end
 
