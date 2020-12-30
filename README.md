@@ -1,13 +1,8 @@
 # MyPkgTemplates
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://garborg.github.io/MyPkgTemplates.jl/stable)
-[![Latest](https://img.shields.io/badge/docs-latest-blue.svg)](https://garborg.github.io/MyPkgTemplates.jl/latest)
-[![Build Status](https://travis-ci.com/garborg/MyPkgTemplates.jl.svg?branch=master)](https://travis-ci.com/garborg/MyPkgTemplates.jl)
-[![Codecov](https://codecov.io/gh/garborg/MyPkgTemplates.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/garborg/MyPkgTemplates.jl)
-[![Coveralls](https://coveralls.io/repos/github/garborg/MyPkgTemplates.jl/badge.svg?branch=master)](https://coveralls.io/github/garborg/MyPkgTemplates.jl?branch=master)
+Uses [PkgTemplates](https://github.com/invenia/PkgTemplates.jl) to create packages scaffolded my way.
 
-Uses [PkgTemplates](https://github.com/invenia/PkgTemplates.jl) to create packages with basic scaffolding.
-Provides two package template generators, one for private repos and one for public repos. See [src/plugin](src/plugin) for examples of creating custom plugins for `PkgTemplates`.
+[src/MyTemplate.jl](src/MyTemplate.jl) provides a decent overview of configuration options to `PkgTemplates.Template`s.
 
 ### Installation
 
@@ -20,17 +15,16 @@ add https://github.com/garborg/MyPkgTemplates.jl.git
 
 ```julia
 using MyPkgTemplates
-t = MyPkgTemplates.public()
-MyPkgTemplates.generate("MyPublicPkg", t)
-```
 
-or
-
-```julia
-using MyPkgTemplates
-t = MyPkgTemplates.private(
-    host="bitbucket.org"
-    owner="Acme Corporation"
+t = MyPkgTemplates.template(
+    parent_dir="~/code/dir",
+    is_pkg=true,
+    is_proprietary=true,
+    overriding_owner="Yoyodyne, Inc.", # i.e. override your git user.name
+    # If meant for broad distribution, add cross-platform testing
+    platforms=(; linux=true, osx=false, windows=false, x64=true, x86=false, arm64=false),
+    min_julia_version=v"1.5",
 )
-MyPkgTemplates.generate("MyPrivatePkg", t)
+
+MyPkgTemplates.generate("MyPkg", t)
 ```
