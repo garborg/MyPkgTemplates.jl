@@ -2,10 +2,13 @@ module MyPkgTemplates
 
 using PkgTemplates: generate
 
-export AllRightsReserved, TestsInSrc, generate, template
+export FlexibleLicense, TestsInSrc, generate, template
 
-include("AllRightsReserved.jl")
+include("plugins/FlexibleLicenses.jl")
+import .FlexibleLicenses: FlexibleLicense
+
 include("TestsInSrc.jl")
+import .TestsInSrc
 
 include("MyTemplate.jl")
 using .MyTemplate: template

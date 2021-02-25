@@ -20,8 +20,8 @@ t = MyPkgTemplates.template(
     parent_dir="~/code/dir",
     is_pkg=true,
     is_proprietary=true,
-    overriding_owner="Yoyodyne, Inc.", # i.e. override your git user.name
-    # If meant for broad distribution, add cross-platform testing
+    owner="Yoyodyne, Inc.", # optionally override your git user.name as owner
+    # Consider cross-platform testing, if doing anything cross-platform that's succeptible to os quirks
     platforms=(; linux=true, osx=false, windows=false, x64=true, x86=false, arm64=false),
     min_julia_version=v"1.5",
 )
