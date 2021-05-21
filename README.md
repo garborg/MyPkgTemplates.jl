@@ -21,6 +21,7 @@ t = MyPkgTemplates.template(
     is_pkg=true,
     is_proprietary=true,
     owner="Yoyodyne, Inc.", # optionally override your git user.name as owner
+    services=true, # should GitHub Actions, Travis, Codecov, etc. be included
     # Consider cross-platform testing, if doing anything cross-platform that's succeptible to os quirks
     platforms=(; linux=true, osx=false, windows=false, x64=true, x86=false, arm64=false),
     min_julia_version=v"1.6",
