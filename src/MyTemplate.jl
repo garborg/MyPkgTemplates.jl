@@ -25,7 +25,7 @@ function template(;
     is_pkg::Bool,
     is_proprietary::Bool,
     owner::Union{Nothing,String}=nothing,
-    min_julia_version::VersionNumber=v"1.5",
+    min_julia_version::VersionNumber=v"1.6",
     platforms=(; linux=true, osx=false, windows=false, x64=true, x86=false, arm64=false),
 )
     test_arm = platforms.arm64
