@@ -23,7 +23,7 @@ t = MyPkgTemplates.template(
     owner="Yoyodyne, Inc.", # optionally override your git user.name as owner
     # Consider cross-platform testing, if doing anything cross-platform that's succeptible to os quirks
     platforms=(; linux=true, osx=false, windows=false, x64=true, x86=false, arm64=false),
-    min_julia_version=v"1.5",
+    min_julia_version=v"1.6",
 )
 
 MyPkgTemplates.generate("MyPkg", t)
