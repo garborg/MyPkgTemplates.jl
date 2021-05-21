@@ -64,6 +64,9 @@ function template(;
 
         if !is_proprietary
             push!(plugins, Codecov())
+            
+            @info """Using coverage plugins, don't forget to manually add your API tokens as secrets,
+            as described [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets#creating-encrypted-secrets)."""
         end
     end
 
