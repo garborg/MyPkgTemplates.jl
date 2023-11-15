@@ -11,6 +11,6 @@ include("TestsInSrc.jl")
 import .TestsInSrc
 
 include("MyTemplate.jl")
-using .MyTemplate: template
+using .MyTemplate: template, pkg, app, scratch
 
 end # module

@@ -30,10 +30,9 @@ function template(;
     services::Bool=true,
     platforms=(; linux=true, osx=false, windows=false, x64=true, x86=false, arm64=false),
 )
-    test_arm = platforms.arm64
+    test_arm = haskey(platforms, :arm64) && platforms.arm64
     @assert !is_proprietary || !test_arm
 
-    # TODO: "UNLICENSED" or "Proprietary"?
     license_name = is_proprietary ? "UNLICENSED" : "MIT"
 
     plugins = Any[
@@ -48,7 +47,7 @@ function template(;
 
         @info """The GitHub Actions 'Documentation' job will not trigger gh-pages deploys until you
         (having admin rights) have manually pushed to the created 'gh-pages' branch at least once."""
-        
+
         push!(plugins, Documenter{GitHubActions}(), GitHubActions(; gh_platforms...))
 
         if test_arm
@@ -64,7 +63,7 @@ function template(;
 
         if !is_proprietary
             push!(plugins, Codecov())
-            
+
             @info """Using coverage plugins, don't forget to manually add your API tokens as secrets,
             as described [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets#creating-encrypted-secrets)."""
         end
@@ -75,6 +74,32 @@ function template(;
         plugins=plugins,
         julia=min_julia_version,
     )
+end
+
+function pkg(;
+    is_pkg=true,
+    is_proprietary=true,
+    kwargs...
+)
+    template(; is_pkg, is_proprietary, kwargs...)
+end
+
+function app(;
+    is_pkg=false,
+    is_proprietary=true,
+    kwargs...
+)
+    template(; is_pkg, is_proprietary, kwargs...)
+end
+
+function scratch(;
+    parent_dir="~/code/scratch",
+    is_pkg=false,
+    is_proprietary=true,
+    services=false,
+    kwargs...
+)
+    template(; parent_dir, is_pkg, is_proprietary, services, kwargs...)
 end
 
 end # module
