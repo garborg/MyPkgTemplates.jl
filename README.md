@@ -16,6 +16,7 @@ add https://github.com/garborg/MyPkgTemplates.jl.git
 ```julia
 using MyPkgTemplates
 
+# See `MyPkgTemplates.{pkg,app,scratch}` -- scenarios-specific defaults for terse template generation.
 t = MyPkgTemplates.template(
     parent_dir="~/code/dir",
     is_pkg=true,
