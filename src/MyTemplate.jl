@@ -1,11 +1,6 @@
 module MyTemplate
 
-# TODO: [Develop](https://invenia.github.io/PkgTemplates.jl/dev/user/#PkgTemplates.Develop)
-# TODO: [Consider giving test its own project](https://invenia.github.io/PkgTemplates.jl/dev/user/#PkgTemplates.Tests)
-# TODO: [Benchmark](https://github.com/invenia/PkgTemplates.jl/issues/86)
-# TODO: [Hooks](https://github.com/invenia/PkgTemplates.jl/issues/11)
-
-using PkgTemplates: Codecov, Documenter, Git, GitHubActions, License, Template, Tests, TravisCI
+using PkgTemplates: Codecov, CompatHelper, Dependabot, Documenter, Git, GitHubActions, License, TagBot, Template, Tests
 
 import ..FlexibleLicense
 import ..TestsInSrc
@@ -16,51 +11,46 @@ import ..TestsInSrc
 PkgTemplate templates the way I configure 'em.
 
 Assumes use of GitHub.
-Turns onn GitHub services if `services`.
+Turns on services (various GitHubActions and others) if `services`.
 Turns on free-for-open-source services if `services` and `!is_proprietary`.
 Marks all rights reserved by owner if `is_proprietary`.
 Sets up testing to look for *_test.jl files within src directory.
 """
 function template(;
-    parent_dir::String,
+    dir::String,
     is_pkg::Bool,
     is_proprietary::Bool,
+    services::Bool,
+    github_actions_kwargs=(;),
     owner::Union{Nothing,String}=nothing,
     min_julia_version::VersionNumber=v"1.6",
-    services::Bool=true,
-    platforms=(; linux=true, osx=false, windows=false, x64=true, x86=false, arm64=false),
 )
-    test_arm = haskey(platforms, :arm64) && platforms.arm64
-    @assert !is_proprietary || !test_arm
-
     license_name = is_proprietary ? "UNLICENSED" : "MIT"
 
     plugins = Any[
         Git(; manifest=!is_pkg, ssh=true),
         !License,
         FlexibleLicense(; owner, name=license_name),
-        Tests(; file=TestsInSrc.TEMPLATE_PATH, project=false),
+        Tests(; file=TestsInSrc.TEMPLATE_PATH, project=false, aqua=true, jet=true),
     ]
 
-    if services
-        gh_platforms = (; filter(kv -> first(kv) != :arm64, pairs(platforms))...)
+    if !services
+        push!(plugins, !CompatHelper, !Dependabot, !GitHubActions, !TagBot)
+
+        if is_pkg
+            push!(plugins, Documenter{NoDeploy}())
+        end
+    else
+        if !is_pkg
+            push!(plugins, !TagBot)
+        end
 
         @info """The GitHub Actions 'Documentation' job will not trigger gh-pages deploys until you
         (having admin rights) have manually pushed to the created 'gh-pages' branch at least once."""
 
-        push!(plugins, Documenter{GitHubActions}(), GitHubActions(; gh_platforms...))
+        push!(plugins, Documenter{GitHubActions}(), GitHubActions(; github_actions_kwargs...))
 
-        if test_arm
-            # n.b. In addition to TravisCI, DroneCI also supports arm64 (and more) and is also free for open source projects
-            push!(plugins, TravisCI(;
-                osx=false,
-                windows=false,
-                x64=false,
-                arm64=true,
-                coverage=false,
-            ))
-        end
-
+        # Codecov is free for open-source projects
         if !is_proprietary
             push!(plugins, Codecov())
 
@@ -70,8 +60,8 @@ function template(;
     end
 
     Template(;
-        dir=parent_dir,
-        plugins=plugins,
+        dir,
+        plugins,
         julia=min_julia_version,
     )
 end
@@ -79,27 +69,29 @@ end
 function pkg(;
     is_pkg=true,
     is_proprietary=true,
+    services=true,
     kwargs...
 )
-    template(; is_pkg, is_proprietary, kwargs...)
+    template(; is_pkg, is_proprietary, services, kwargs...)
 end
 
 function app(;
     is_pkg=false,
     is_proprietary=true,
+    services=true,
     kwargs...
 )
-    template(; is_pkg, is_proprietary, kwargs...)
+    template(; is_pkg, is_proprietary, services, kwargs...)
 end
 
 function scratch(;
-    parent_dir="~/code/scratch",
+    dir="~/code/scratch",
     is_pkg=false,
     is_proprietary=true,
     services=false,
     kwargs...
 )
-    template(; parent_dir, is_pkg, is_proprietary, services, kwargs...)
+    template(; dir, is_pkg, is_proprietary, services, kwargs...)
 end
 
 end # module

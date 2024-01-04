@@ -15,18 +15,17 @@ add https://github.com/garborg/MyPkgTemplates.jl.git
 
 ```julia
 using MyPkgTemplates
-
-# See `MyPkgTemplates.{pkg,app,scratch}` -- scenarios-specific defaults for terse template generation.
+# Create template.
+# See `MyPkgTemplates.{pkg,app,scratch}` -- with scenario-specific defaults for terse template generation.
 t = MyPkgTemplates.template(
-    parent_dir="~/code/dir",
+    dir="~/code/dir",
     is_pkg=true,
     is_proprietary=true,
     owner="Yoyodyne, Inc.", # optionally override your git user.name as owner
-    services=true, # should GitHub Actions, Travis, Codecov, etc. be included
-    # Consider cross-platform testing, if doing anything cross-platform that's succeptible to os quirks
-    platforms=(; linux=true, osx=false, windows=false, x64=true, x86=false, arm64=false),
+    services=true, # should GitHub Actions, Codecov, etc. be included
     min_julia_version=v"1.6",
 )
 
-MyPkgTemplates.generate("MyPkg", t)
+# Generate package
+t("MyPkg.jl")
 ```

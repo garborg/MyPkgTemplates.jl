@@ -11,6 +11,8 @@ but I believe it breaks some license identification tools.
 """
 default_format_year(y) = "$y-present"
 
+# TODO: Make FlexibleLicense [customizable](https://juliaci.github.io/PkgTemplates.jl/stable/developer/#Supporting-Interactive-Mode)
+
 """
     OwnerFlexibleLicense(; owner="Yoyodynene, Inc.", name="MIT", path=nothing, destination="LICENSE")
 Creates a license file. Provides the ability to specify an owner other than the package authors.
